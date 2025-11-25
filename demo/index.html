@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticky Notes Demo</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .controls {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 10000;
+    }
+
+    .controls h2 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+
+    .controls button {
+      margin: 5px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      background: #667eea;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .controls button:hover {
+      background: #5568d3;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <h2>Sticky Notes Demo</h2>
+    <button id="addNote">Add Note</button>
+    <button id="saveNotes">Save Notes</button>
+    <button id="loadNotes">Load Notes</button>
+    <button id="clearNotes">Clear All</button>
+  </div>
+
+  <script type="module" src="index.js"></script>
+</body>
+</html>

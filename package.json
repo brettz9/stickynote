@@ -1,0 +1,46 @@
+{
+  "name": "stickynote",
+  "version": "0.1.0",
+  "description": "Creates collapsible client-side sticky notes",
+  "keywords": [
+    "sticky",
+    "notes"
+  ],
+  "homepage": "https://github.com/brettz9/stickynote",
+  "bugs": {
+    "url": "https://github.com/brettz9/stickynote/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brettz9/stickynote.git"
+  },
+  "license": "MIT",
+  "author": "Brett Zamir <brettz9@yahoo.com>",
+  "contributors": [],
+  "type": "module",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index-umd.js"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "prepublishOnly": "npm run rollup",
+    "start": "open http://localhost:8017/demo/ && static -p 8017",
+    "eslint": "eslint --ext=js,cjs,mjs,md,html .",
+    "lint": "npm run eslint",
+    "rollup": "echo '{\"type\": \"commonjs\"}' > dist/package.json && rollup -c && tsc"
+  },
+  "devDependencies": {
+    "@node-static/node-static": "^0.8.1",
+    "eslint": "9.39.1",
+    "eslint-config-ash-nazg": "39.8.0",
+    "open-cli": "^8.0.0",
+    "rollup": "^4.53.3"
+  },
+  "engines": {
+    "node": "^20.11.0 || >=22.16.0"
+  },
+  "browserslist": [
+    "last 2 chrome versions"
+  ]
+}
