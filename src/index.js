@@ -12,6 +12,8 @@
  * @typedef {{
  *   x?: number,
  *   y?: number,
+ *   width?: number,
+ *   height?: number,
  *   color?: string,
  *   text?: string,
  *   title?: string,
@@ -38,6 +40,8 @@ class StickyNote {
     /** @type {NoteData[]} */
     this.notes = [];
     this.draggedNote = null;
+    this.resizedNote = null;
+    this.resizeStart = {x: 0, y: 0, width: 0, height: 0};
     this.offset = {x: 0, y: 0};
     this.colors = options.colors ||
       ['#fff740', '#ff7eb9', '#7afcff', '#feff9c', '#a7ffeb'];
@@ -56,6 +60,8 @@ class StickyNote {
     // Bind events
     document.addEventListener('mousemove', this.handleDrag.bind(this));
     document.addEventListener('mouseup', this.handleDragEnd.bind(this));
+    document.addEventListener('mousemove', this.handleResize.bind(this));
+    document.addEventListener('mouseup', this.handleResizeEnd.bind(this));
   }
 
   /**
@@ -91,7 +97,8 @@ class StickyNote {
       }
 
       .sticky-note.collapsed {
-        min-height: auto;
+        min-height: auto !important;
+        height: auto !important;
       }
 
       .sticky-note.collapsed .sticky-note-controls {
@@ -239,6 +246,32 @@ class StickyNote {
       .sticky-note-confirm-btn-no:hover {
         background: #5a6268;
       }
+
+      .sticky-note-resize-handle {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 16px;
+        height: 16px;
+        cursor: nwse-resize;
+        z-index: 10;
+      }
+
+      .sticky-note-resize-handle::after {
+        content: '';
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 0 12px 12px;
+        border-color: transparent transparent rgba(0, 0, 0, 0.2) transparent;
+      }
+
+      .sticky-note.resizing {
+        opacity: 0.8;
+      }
     `;
     document.head.append(style);
   }
@@ -255,6 +288,8 @@ class StickyNote {
     const x = options.x || Math.random() * (window.innerWidth - 250);
     // eslint-disable-next-line sonarjs/pseudo-random -- Safe
     const y = options.y || Math.random() * (window.innerHeight - 200);
+    const width = options.width || 200;
+    const height = options.height || 150;
     const color = options.color || this.defaultColor;
     const text = options.text || '';
     const title = options.title || '';
@@ -262,7 +297,12 @@ class StickyNote {
 
     note.style.left = `${x}px`;
     note.style.top = `${y}px`;
+    note.style.width = `${width}px`;
+    note.style.minHeight = `${height}px`;
     note.style.background = color;
+
+    // Store original height for collapse/expand
+    note.dataset.expandedHeight = height.toString();
 
     // Store color index for cycling
     const colorIndex = this.colors.indexOf(color);
@@ -276,14 +316,6 @@ class StickyNote {
     if (title) {
       titleElement.classList.add('has-content');
     }
-
-    // Double-click title to toggle collapse (when not editing)
-    titleElement.addEventListener('dblclick', (e) => {
-      if (!titleElement.classList.contains('editing')) {
-        e.stopPropagation();
-        note.classList.toggle('collapsed');
-      }
-    });
 
     // Prevent drag only when editing title
     titleElement.addEventListener('mousedown', (e) => {
@@ -367,11 +399,29 @@ class StickyNote {
     const header = document.createElement('div');
     header.className = 'sticky-note-header';
 
-    // Double-click header to collapse/expand (when not clicking on editable
-    //   title or buttons)
-    header.addEventListener('dblclick', (e) => {
-      if (e.target === titleElement &&
-        titleElement.classList.contains('editing')) {
+    header.append(titleElement);
+    header.append(controls);
+
+    // Create resize handle
+    const resizeHandle = document.createElement('div');
+    resizeHandle.className = 'sticky-note-resize-handle';
+    resizeHandle.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      this.handleResizeStart(e, note);
+    });
+
+    note.append(header);
+    note.append(content);
+    note.append(resizeHandle);
+
+    // Double-click to collapse/expand when clicking on header area
+    note.addEventListener('dblclick', (e) => {
+      // Only collapse if double-clicking the header (not content area)
+      if (content.contains(/** @type {Node} */ (e.target)) ||
+          e.target === content) {
+        return;
+      }
+      if (titleElement.classList.contains('editing')) {
         return;
       }
       if (/** @type {HTMLElement} */ (
@@ -379,15 +429,21 @@ class StickyNote {
       ).classList.contains('sticky-note-btn')) {
         return;
       }
-      e.stopPropagation();
+
+      const isCollapsed = note.classList.contains('collapsed');
+
+      if (isCollapsed) {
+        // Expanding - restore the height
+        const expandedHeight = note.dataset.expandedHeight || '150';
+        note.style.minHeight = `${expandedHeight}px`;
+      } else {
+        // Collapsing - store current height
+        note.dataset.expandedHeight = note.offsetHeight.toString();
+      }
+
       note.classList.toggle('collapsed');
     });
 
-    header.append(titleElement);
-    header.append(controls);
-
-    note.append(header);
-    note.append(content);
     this.container.append(note);
 
     // Apply collapsed state if specified
@@ -442,6 +498,49 @@ class StickyNote {
     if (this.draggedNote) {
       this.draggedNote.classList.remove('dragging');
       this.draggedNote = null;
+    }
+  }
+
+  /**
+   * @param {MouseEvent} e
+   * @param {HTMLDivElement} note
+   * @returns {void}
+   */
+  handleResizeStart (e, note) {
+    this.resizedNote = note;
+    this.resizeStart.x = e.clientX;
+    this.resizeStart.y = e.clientY;
+    this.resizeStart.width = note.offsetWidth;
+    this.resizeStart.height = note.offsetHeight;
+    note.classList.add('resizing');
+  }
+
+  /**
+   * @param {MouseEvent} e
+   * @returns {void}
+   */
+  handleResize (e) {
+    if (!this.resizedNote) {
+      return;
+    }
+
+    const deltaX = e.clientX - this.resizeStart.x;
+    const deltaY = e.clientY - this.resizeStart.y;
+
+    const newWidth = Math.max(150, this.resizeStart.width + deltaX);
+    const newHeight = Math.max(100, this.resizeStart.height + deltaY);
+
+    this.resizedNote.style.width = `${newWidth}px`;
+    this.resizedNote.style.minHeight = `${newHeight}px`;
+  }
+
+  /**
+   * @returns {void}
+   */
+  handleResizeEnd () {
+    if (this.resizedNote) {
+      this.resizedNote.classList.remove('resizing');
+      this.resizedNote = null;
     }
   }
 
@@ -595,6 +694,8 @@ class StickyNote {
       color: n.element.style.background,
       x: Number.parseInt(n.element.style.left),
       y: Number.parseInt(n.element.style.top),
+      width: n.element.offsetWidth,
+      height: n.element.offsetHeight,
       collapsed: n.element.classList.contains('collapsed'),
       metadata: n.metadata || {}
     }));

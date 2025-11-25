@@ -1,5 +1,9 @@
 # CHANGES for stickynote
 
+## 0.3.0
+
+- feat: make notes resizable
+
 ## 0.2.0
 
 - feat: allow note (string record) metadata with optional filter argument
