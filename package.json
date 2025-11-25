@@ -1,6 +1,6 @@
 {
   "name": "stickynote",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Creates collapsible client-side sticky notes",
   "keywords": [
     "sticky",
@@ -26,7 +26,7 @@
     },
     "require": {
       "types": "./dist/index.d.cts",
-      "default": "./dist/index-umd.js"
+      "default": "./dist/index.umd.js"
     }
   },
   "main": "src/index.js",
