@@ -9,7 +9,8 @@ const stickyNotes = new StickyNote({
 // Add note button
 document.querySelector('#addNote').addEventListener('click', () => {
   stickyNotes.createNote({
-    text: 'Double-click to edit!\nDrag me around.\nClick 🎨 to change color.',
+    // eslint-disable-next-line @stylistic/max-len -- Long
+    html: 'Double-click to edit!<br />Drag me around.<br />Click 🎨 to change color.',
     // eslint-disable-next-line sonarjs/pseudo-random -- Safe
     x: (Math.random() * (window.innerWidth - 300)) + 50,
     // eslint-disable-next-line sonarjs/pseudo-random -- Safe
@@ -45,7 +46,8 @@ document.querySelector('#clearNotes').addEventListener('click', () => {
 
 // Create a welcome note on load
 stickyNotes.createNote({
-  text: 'Welcome to Sticky Notes!\n\nClick "Add Note" to create more notes.',
+  // eslint-disable-next-line @stylistic/max-len -- Long
+  html: 'Welcome to Sticky Notes!<br /><br />Click "Add Note" to create more notes.',
   x: 100,
   y: 150
 });

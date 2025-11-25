@@ -20,7 +20,8 @@ const stickyNotes = new StickyNote({
 });
 
 stickyNotes.createNote({
-  text: 'Double-click to edit!\nDrag me around.\nClick 🎨 to change color.',
+  // eslint-disable-next-line @stylistic/max-len -- Long
+  html: 'Double-click to edit!<br />Drag me around.<br />Click 🎨 to change color.',
   x: 150,
   y: 150
 });

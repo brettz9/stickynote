@@ -1,5 +1,9 @@
 # CHANGES for stickynote
 
+## 0.4.0
+
+- (BREAKING) feat: accept `html` property instead of `text`
+
 ## 0.3.0
 
 - feat: make notes resizable

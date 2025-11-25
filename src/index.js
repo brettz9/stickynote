@@ -15,7 +15,7 @@
  *   width?: number,
  *   height?: number,
  *   color?: string,
- *   text?: string,
+ *   html?: string,
  *   title?: string,
  *   collapsed?: boolean,
  *   metadata?: Record<string, string>
@@ -291,7 +291,7 @@ class StickyNote {
     const width = options.width || 200;
     const height = options.height || 150;
     const color = options.color || this.defaultColor;
-    const text = options.text || '';
+    const html = options.html || '';
     const title = options.title || '';
     const collapsed = options.collapsed || false;
 
@@ -365,7 +365,7 @@ class StickyNote {
     const content = document.createElement('div');
     content.className = 'sticky-note-content';
     content.contentEditable = 'true';
-    content.textContent = text;
+    content.innerHTML = html;
 
     // Prevent drag when editing
     content.addEventListener('mousedown', (e) => {
@@ -690,7 +690,7 @@ class StickyNote {
       : this.notes;
     return notes.map((n) => ({
       title: n.title.textContent,
-      text: n.content.textContent,
+      html: n.content.innerHTML,
       color: n.element.style.background,
       x: Number.parseInt(n.element.style.left),
       y: Number.parseInt(n.element.style.top),
