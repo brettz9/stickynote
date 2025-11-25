@@ -1,5 +1,7 @@
 # stickynote
 
+Creates collapsible client-side sticky notes with changeable title and color.
+
 See the [demo](https://brettz9.github.io/stickynote/demo/).
 
 ## Installation
