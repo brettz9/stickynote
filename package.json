@@ -18,19 +18,28 @@
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "type": "module",
+  "types": "./dist/index.d.cts",
   "exports": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index-umd.js"
+    "import": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index-umd.js"
+    }
   },
   "main": "src/index.js",
   "scripts": {
     "prepublishOnly": "npm run rollup",
+    "attw": "attw --pack",
     "start": "open http://localhost:8017/demo/ && static -p 8017",
     "eslint": "eslint --ext=js,cjs,mjs,md,html .",
     "lint": "npm run eslint",
     "rollup": "echo '{\"type\": \"commonjs\"}' > dist/package.json && rollup -c && tsc"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@node-static/node-static": "^0.8.1",
     "eslint": "9.39.1",
     "eslint-config-ash-nazg": "39.8.0",

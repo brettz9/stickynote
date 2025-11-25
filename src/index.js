@@ -607,4 +607,4 @@ class StickyNote {
   }
 }
 
-export default StickyNote;
+export {StickyNote};

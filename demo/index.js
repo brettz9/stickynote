@@ -1,5 +1,5 @@
 /* eslint-disable no-alert -- Demo */
-import StickyNote from '../src/index.js';
+import {StickyNote} from '../src/index.js';
 
 // Initialize the sticky notes library
 const stickyNotes = new StickyNote({
