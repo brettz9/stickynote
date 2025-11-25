@@ -10,6 +10,7 @@
 
 /**
  * @typedef {{
+ *   id?: string,
  *   x?: number,
  *   y?: number,
  *   width?: number,
@@ -284,6 +285,9 @@ class StickyNote {
     const note = document.createElement('div');
     note.className = 'sticky-note';
 
+    const id = options.id ||
+    // eslint-disable-next-line sonarjs/pseudo-random -- Safe
+      String(Math.floor(Math.random() * 10000000000000000));
     // eslint-disable-next-line sonarjs/pseudo-random -- Safe
     const x = options.x || Math.random() * (window.innerWidth - 250);
     // eslint-disable-next-line sonarjs/pseudo-random -- Safe
@@ -295,6 +299,7 @@ class StickyNote {
     const title = options.title || '';
     const collapsed = options.collapsed || false;
 
+    note.dataset.id = id;
     note.style.left = `${x}px`;
     note.style.top = `${y}px`;
     note.style.width = `${width}px`;
@@ -689,6 +694,7 @@ class StickyNote {
       })
       : this.notes;
     return notes.map((n) => ({
+      id: n.element.dataset.id ?? '',
       title: n.title.textContent,
       html: n.content.innerHTML,
       color: n.element.style.background,

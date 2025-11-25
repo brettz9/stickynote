@@ -1,5 +1,9 @@
 # CHANGES for stickynote
 
+## 0.5.0
+
+- feat: add `id` property
+
 ## 0.4.0
 
 - (BREAKING) feat: accept `html` property instead of `text`
