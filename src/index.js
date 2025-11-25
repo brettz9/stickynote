@@ -734,8 +734,11 @@ class StickyNote {
         return filter(...args);
       })
       : this.notes;
-    notes.forEach((n) => n.element.remove());
-    this.notes = [];
+    notes.forEach((n) => {
+      n.element.remove();
+      const idx = this.notes.indexOf(n);
+      this.notes.splice(idx, 1);
+    });
   }
 }
 

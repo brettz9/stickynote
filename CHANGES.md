@@ -1,5 +1,9 @@
 # CHANGES for stickynote
 
+## 0.6.2
+
+- fix: do not clear unfiltered notes
+
 ## 0.6.1
 
 - fix: pass note data to `onDelete`
