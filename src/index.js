@@ -4,7 +4,7 @@
  *   content: HTMLDivElement,
  *   title: HTMLDivElement,
  *   color: string,
- *   metadata?: Record<string, string>
+ *   metadata: Record<string, string>
  * }} NoteData
  */
 

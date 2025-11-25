@@ -1,5 +1,9 @@
 # CHANGES for stickynote
 
+## ?
+
+- fix(types): metadata is non-optional as part of `NoteData`
+
 ## 0.5.0
 
 - feat: add `id` property
