@@ -34,7 +34,7 @@ class StickyNote {
    *   container?: HTMLElement,
    *   colors?: string[],
    *   defaultColor?: string,
-   *   onDelete?: (noteElement: HTMLDivElement) => void
+   *   onDelete?: (noteData: NoteData) => void
    * }} [options]
    */
   constructor (options = {}) {
@@ -679,10 +679,10 @@ class StickyNote {
     const index = this.notes.findIndex((n) => n.element === noteElement);
     if (index !== -1) {
       this.notes[index].element.remove();
-      this.notes.splice(index, 1);
-    }
-    if (this.onDelete) {
-      this.onDelete(noteElement);
+      const noteData = this.notes.splice(index, 1);
+      if (this.onDelete) {
+        this.onDelete(noteData[0]);
+      }
     }
   }
 

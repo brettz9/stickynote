@@ -1,5 +1,9 @@
 # CHANGES for stickynote
 
+## 0.6.1
+
+- fix: pass note data to `onDelete`
+
 ## 0.6.0
 
 - feat: `onDelete` option
