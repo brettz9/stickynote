@@ -33,7 +33,8 @@ class StickyNote {
    * @param {{
    *   container?: HTMLElement,
    *   colors?: string[],
-   *   defaultColor?: string
+   *   defaultColor?: string,
+   *   onDelete?: (noteElement: HTMLDivElement) => void
    * }} [options]
    */
   constructor (options = {}) {
@@ -47,6 +48,7 @@ class StickyNote {
     this.colors = options.colors ||
       ['#fff740', '#ff7eb9', '#7afcff', '#feff9c', '#a7ffeb'];
     this.defaultColor = options.defaultColor || this.colors[0];
+    this.onDelete = options.onDelete;
 
     this.init();
   }
@@ -678,6 +680,9 @@ class StickyNote {
     if (index !== -1) {
       this.notes[index].element.remove();
       this.notes.splice(index, 1);
+    }
+    if (this.onDelete) {
+      this.onDelete(noteElement);
     }
   }
 

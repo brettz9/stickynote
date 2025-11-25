@@ -1,7 +1,8 @@
 # CHANGES for stickynote
 
-## ?
+## 0.6.0
 
+- feat: `onDelete` option
 - fix(types): metadata is non-optional as part of `NoteData`
 
 ## 0.5.0
