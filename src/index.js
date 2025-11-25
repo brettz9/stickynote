@@ -3,7 +3,8 @@
  *   element: HTMLDivElement,
  *   content: HTMLDivElement,
  *   title: HTMLDivElement,
- *   color: string
+ *   color: string,
+ *   metadata?: Record<string, string>
  * }} NoteData
  */
 
@@ -14,7 +15,8 @@
  *   color?: string,
  *   text?: string,
  *   title?: string,
- *   collapsed?: boolean
+ *   collapsed?: boolean,
+ *   metadata?: Record<string, string>
  * }} NoteInfo
  */
 
@@ -397,7 +399,8 @@ class StickyNote {
       element: note,
       content,
       title: titleElement,
-      color
+      color,
+      metadata: options.metadata || {}
     };
 
     this.notes.push(noteData);
@@ -575,16 +578,25 @@ class StickyNote {
   }
 
   /**
-   * @returns {Required<NoteInfo[]>}
+   * @param {(
+   *   noteInfo: NoteData, idx: number, arr: NoteData[]
+   * ) => boolean} [filter]
+   * @returns {Required<NoteInfo>[]}
    */
-  getAllNotes () {
-    return this.notes.map((n) => ({
+  getAllNotes (filter) {
+    const notes = filter
+      ? this.notes.filter((...args) => {
+        return filter(...args);
+      })
+      : this.notes;
+    return notes.map((n) => ({
       title: n.title.textContent,
       text: n.content.textContent,
       color: n.element.style.background,
       x: Number.parseInt(n.element.style.left),
       y: Number.parseInt(n.element.style.top),
-      collapsed: n.element.classList.contains('collapsed')
+      collapsed: n.element.classList.contains('collapsed'),
+      metadata: n.metadata || {}
     }));
   }
 
@@ -599,10 +611,18 @@ class StickyNote {
   }
 
   /**
+   * @param {(
+   *   noteInfo: NoteData, idx: number, arr: NoteData[]
+   * ) => boolean} [filter]
    * @returns {void}
    */
-  clear () {
-    this.notes.forEach((n) => n.element.remove());
+  clear (filter) {
+    const notes = filter
+      ? this.notes.filter((...args) => {
+        return filter(...args);
+      })
+      : this.notes;
+    notes.forEach((n) => n.element.remove());
     this.notes = [];
   }
 }
