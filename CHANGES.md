@@ -1,5 +1,10 @@
 # CHANGES for stickynote
 
+## 0.7.0
+
+- feat: retain z-index when saving/loading
+- fix: clear was not always removing all notes
+
 ## 0.6.2
 
 - fix: do not clear unfiltered notes
